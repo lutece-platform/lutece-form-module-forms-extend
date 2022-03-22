@@ -58,12 +58,18 @@ public class FormResponseViewModelProcessor implements IFormResponseViewModelPro
     {
 
         ResourceExtenderDTO resourceExtender = new ResourceExtenderDTO( );
-        FormResponse formResponse = FormResponseHome.loadById( nIdFormResponse );
         resourceExtender.setIdExtendableResource( String.valueOf( nIdFormResponse ) );
-        resourceExtender.setExtendableResourceType( RESOURCE_TYPE_PREFIX + formResponse.getFormId( ) );
         resourceExtender.setName( RESOURCE_TYPE_PREFIX + nIdFormResponse );
+        
+        FormResponse formResponse = FormResponseHome.loadById( nIdFormResponse );
+        
+        if (formResponse != null)
+        {
+            resourceExtender.setExtendableResourceType( RESOURCE_TYPE_PREFIX + formResponse.getFormId( ) );
+        }
 
         IResourceExtenderComponentManager extenderComponentManager = SpringContextService.getBean( ResourceExtenderComponentManager.BEAN_MANAGER );
+        
         if ( extenderComponentManager != null )
         {
 
