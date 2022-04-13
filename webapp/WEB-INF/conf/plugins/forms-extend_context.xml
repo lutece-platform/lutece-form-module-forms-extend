@@ -7,4 +7,36 @@
 	<bean id="forms-extend.formResponseViewModelProcessor" class="fr.paris.lutece.plugins.forms.modules.extend.service.FormResponseViewModelProcessor" />
 
 
+	<bean id="forms-extend.formResponseExtendRating.column" 
+        class="fr.paris.lutece.plugins.forms.modules.extend.business.form.culumn.impl.FormColumnFormResponseExtend">
+        <constructor-arg name="strExtenderType"
+            type="java.lang.String" value="rating" />
+        <constructor-arg name="nFormColumnPosition"
+            type="int" value="10" />
+        <constructor-arg name="strFormColumnTitle"
+            type="java.lang.String"
+            value="module.forms.extend.column.extendRating.title" 
+            />
+    </bean>
+    <bean id="forms-extend.formResponseExtendComment.column" 
+        class="fr.paris.lutece.plugins.forms.modules.extend.business.form.culumn.impl.FormColumnFormResponseExtend">
+         <constructor-arg name="strExtenderType"
+            type="java.lang.String" value="comment" />
+        <constructor-arg name="nFormColumnPosition"
+            type="int" value="10" />
+        <constructor-arg name="strFormColumnTitle"
+            type="java.lang.String"
+            value="module.forms.extend.column.extendComment.title" />
+    </bean>
+     <bean id="forms-extend.formResponseExtendHit.column"
+        class="fr.paris.lutece.plugins.forms.modules.extend.business.form.culumn.impl.FormColumnFormResponseExtend">
+         <constructor-arg name="strExtenderType"
+            type="java.lang.String" value="hit" />       
+        <constructor-arg name="nFormColumnPosition"
+            type="int" value="10" />
+        <constructor-arg name="strFormColumnTitle"
+            type="java.lang.String"
+            value="module.forms.extend.column.extendHit.title" />
+    </bean>
+   
 </beans>

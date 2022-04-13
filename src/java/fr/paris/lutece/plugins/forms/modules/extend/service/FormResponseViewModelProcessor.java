@@ -52,7 +52,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public class FormResponseViewModelProcessor implements IFormResponseViewModelProcessor
 {
     private static final String RESOURCE_TYPE_PREFIX = FormResponse.RESOURCE_TYPE + "_";
-
     @Override
     public void populateModel( HttpServletRequest request, Map<String, Object> mapModel, int nIdFormResponse, Locale locale )
     {
@@ -86,5 +85,4 @@ public class FormResponseViewModelProcessor implements IFormResponseViewModelPro
     {
         return SpringContextService.getBeansOfType( IResourceExtender.class );
     }
-
 }
