@@ -5,7 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd" >
 
 	<bean id="forms-extend.formResponseViewModelProcessor" class="fr.paris.lutece.plugins.forms.modules.extend.service.FormResponseViewModelProcessor" />
-
+	<bean id="forms-extend.extendLuceneExternalFieldProvider" class="fr.paris.lutece.plugins.forms.modules.extend.service.ExtendLuceneExternalFieldProvider" />
+	
 
 	<bean id="forms-extend.formResponseExtendRating.column" 
         class="fr.paris.lutece.plugins.forms.modules.extend.business.form.culumn.impl.FormColumnFormResponseExtend">

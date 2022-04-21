@@ -10,6 +10,7 @@ import fr.paris.lutece.plugins.extend.service.extender.facade.ExtenderType;
 import fr.paris.lutece.plugins.extend.service.extender.facade.IExtendableResourceResult;
 import fr.paris.lutece.plugins.extend.service.extender.facade.ResourceExtenderServiceFacade;
 import fr.paris.lutece.plugins.forms.business.form.column.FormColumnCell;
+import fr.paris.lutece.plugins.forms.modules.extend.service.Constants;
 import fr.paris.lutece.plugins.forms.web.form.column.display.impl.AbstractFormColumnDisplay;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 
@@ -31,7 +32,7 @@ public class FormColumnDisplayFormResponseExtend extends AbstractFormColumnDispl
 		 Map<String, Object> model = new LinkedHashMap<>( );
 	        model.put( MARK_SORT_URL, buildCompleteSortUrl( strSortUrl ) );
 	        model.put( MARK_FORM_RESPONSE_EXTEND_COLUMN_TITLE, getFormColumnTitle( locale ) );
-	        model.put( MARK_COLUMN_SORT_ATTRIBUTE, StringUtils.EMPTY );
+	        model.put( MARK_COLUMN_SORT_ATTRIBUTE, strExtenderType + Constants.COULUMN_NAME_SUFIX );
 
 	        String strFormResponseAssigneeHeaderTemplate = AppTemplateService.getTemplate( FORM_COLUMN_HEADER_TEMPLATE, locale, model ).getHtml( );
 	        setFormColumnHeaderTemplate( strFormResponseAssigneeHeaderTemplate );
