@@ -36,7 +36,7 @@ public class ExtendLuceneExternalFieldProvider implements ILucenDocumentExternal
 			for ( ExtenderType<? extends IExtendableResourceResult> extender : ResourceExtenderServiceFacade.getListExtenderType( ) )
 		    {		       
 		    	List<ResourceExtenderHistory> listResourceExtenderHistory= historyService.findByListIdResource(listIdExtendableResource, FormResponse.RESOURCE_TYPE+"_"+entry.getKey(), extender.getType());
-		        addFieldsToDocument(documentList,listResourceExtenderHistory, extender );      
+		        addFieldsToDocument(documentList.stream().filter(doc -> listIdExtendableResource.contains(doc.get(SearchItem.FIELD_UID))).collect(Collectors.toList()),listResourceExtenderHistory, extender );      
 		     }  
 		}
 
