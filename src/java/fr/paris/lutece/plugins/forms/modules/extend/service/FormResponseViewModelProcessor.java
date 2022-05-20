@@ -33,14 +33,15 @@
  */
 package fr.paris.lutece.plugins.forms.modules.extend.service;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.extend.business.extender.ResourceExtenderDTO;
-import fr.paris.lutece.plugins.extend.service.extender.IResourceExtender;
+import fr.paris.lutece.plugins.extend.business.extender.ResourceExtenderDTOFilter;
+import fr.paris.lutece.plugins.extend.service.extender.IResourceExtenderService;
+import fr.paris.lutece.plugins.extend.service.extender.ResourceExtenderService;
 import fr.paris.lutece.plugins.extend.web.component.IResourceExtenderComponent;
 import fr.paris.lutece.plugins.extend.web.component.IResourceExtenderComponentManager;
 import fr.paris.lutece.plugins.extend.web.component.ResourceExtenderComponentManager;
@@ -51,7 +52,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 public class FormResponseViewModelProcessor implements IFormResponseViewModelProcessor
 {
-    private static final String RESOURCE_TYPE_PREFIX = FormResponse.RESOURCE_TYPE + "_";
     @Override
     public void populateModel( HttpServletRequest request, Map<String, Object> mapModel, int nIdFormResponse, Locale locale )
     {
@@ -59,30 +59,26 @@ public class FormResponseViewModelProcessor implements IFormResponseViewModelPro
         ResourceExtenderDTO resourceExtender = new ResourceExtenderDTO( );
         FormResponse formResponse = FormResponseHome.loadById( nIdFormResponse );
         resourceExtender.setIdExtendableResource( String.valueOf( nIdFormResponse ) );
-        resourceExtender.setExtendableResourceType( RESOURCE_TYPE_PREFIX + formResponse.getFormId( ) );
-        resourceExtender.setName( RESOURCE_TYPE_PREFIX + nIdFormResponse );
-
+        resourceExtender.setExtendableResourceType( formResponse.getExtendableResourceType( ) );
+        resourceExtender.setName( formResponse.getExtendableResourceName( ) );      
+        IResourceExtenderService resourceExtenderService = SpringContextService.getBean( ResourceExtenderService.BEAN_SERVICE );
+        ResourceExtenderDTOFilter filter = new ResourceExtenderDTOFilter();
+        filter.setFilterExtendableResourceType( resourceExtender.getExtendableResourceType( ));
         IResourceExtenderComponentManager extenderComponentManager = SpringContextService.getBean( ResourceExtenderComponentManager.BEAN_MANAGER );
         if ( extenderComponentManager != null )
         {
-
             IResourceExtenderComponent resourceExtendercomponent = null;
-
-            for ( IResourceExtender extender : getResourceExtenders( ) )
+            for ( ResourceExtenderDTO extender : resourceExtenderService.findByFilter(filter) )
             {
-                resourceExtender.setExtenderType( extender.getKey( ) );
-                resourceExtendercomponent = extenderComponentManager.getResourceExtenderComponent( extender.getKey( ) );
+                resourceExtender.setExtenderType( extender.getExtenderType() );
+                resourceExtendercomponent = extenderComponentManager.getResourceExtenderComponent( extender.getExtenderType() );
                 if ( resourceExtendercomponent != null )
                 {
-                    mapModel.put( extender.getKey( ), resourceExtendercomponent.getInfoHtml( resourceExtender, locale, request ) );
+                    mapModel.put( extender.getExtenderType(), resourceExtendercomponent.getInfoHtml( resourceExtender, locale, request ) );
                 }
 
             }
         }
     }
 
-    private List<IResourceExtender> getResourceExtenders( )
-    {
-        return SpringContextService.getBeansOfType( IResourceExtender.class );
-    }
 }
