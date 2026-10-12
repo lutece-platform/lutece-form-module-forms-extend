@@ -15,33 +15,52 @@ import fr.paris.lutece.plugins.extend.service.extender.facade.ExtenderType;
 import fr.paris.lutece.plugins.extend.service.extender.facade.IExtendableResourceResult;
 import fr.paris.lutece.plugins.extend.service.extender.facade.ResourceExtenderServiceFacade;
 import fr.paris.lutece.plugins.extend.service.extender.history.IResourceExtenderHistoryService;
-import fr.paris.lutece.plugins.extend.service.extender.history.ResourceExtenderHistoryService;
 import fr.paris.lutece.plugins.forms.business.FormResponse;
 import fr.paris.lutece.plugins.forms.business.form.search.FormResponseSearchItem;
 import fr.paris.lutece.plugins.forms.service.search.ILucenDocumentExternalFieldProvider;
 import fr.paris.lutece.portal.service.search.SearchItem;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
+/**
+ * Adds to the Lucene documents of the form responses one count field per extender type.
+ */
+@ApplicationScoped
 public class ExtendLuceneExternalFieldProvider implements ILucenDocumentExternalFieldProvider {
 
+	@Inject
+	private IResourceExtenderHistoryService _historyService;
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void provideFields(List<Document> documentList) {
 		
 		Map<String, List<Document> > mapDoc= documentList.stream().collect(Collectors.groupingBy(doc-> doc.get(FormResponseSearchItem.FIELD_ID_FORM)));
 
-		IResourceExtenderHistoryService historyService=SpringContextService.getBean( ResourceExtenderHistoryService.BEAN_SERVICE );
 		for( Entry<String, List<Document>> entry: mapDoc.entrySet()) {
 			
 			List<String> listIdExtendableResource= entry.getValue().stream().map(doc -> doc.get(SearchItem.FIELD_UID)).collect(Collectors.toList());
 			for ( ExtenderType<? extends IExtendableResourceResult> extender : ResourceExtenderServiceFacade.getListExtenderType( ) )
 		    {		       
-		    	List<ResourceExtenderHistory> listResourceExtenderHistory= historyService.findByListIdResource(listIdExtendableResource, FormResponse.RESOURCE_TYPE+"_"+entry.getKey(), extender.getType());
+		    	List<ResourceExtenderHistory> listResourceExtenderHistory= _historyService.findByListIdResource(listIdExtendableResource, FormResponse.RESOURCE_TYPE+"_"+entry.getKey(), extender.getType());
 		        addFieldsToDocument(documentList.stream().filter(doc -> listIdExtendableResource.contains(doc.get(SearchItem.FIELD_UID))).collect(Collectors.toList()),listResourceExtenderHistory, extender );      
 		     }  
 		}
 
 	}
 	
+	/**
+	 * Adds to each document the number of history entries of the extender for its resource.
+	 *
+	 * @param documentList
+	 *            the documents of one form
+	 * @param listResourceExtenderHistory
+	 *            the history entries of the extender for these documents
+	 * @param extender
+	 *            the extender type
+	 */
 	private void addFieldsToDocument(List<Document>  documentList,  List<ResourceExtenderHistory> listResourceExtenderHistory, ExtenderType<? extends IExtendableResourceResult> extender ) 
 	{
 		long count=0;
